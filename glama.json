@@ -1,0 +1,9 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": [
+    "GeminiGeorge22"
+  ],
+  "name": "Company Social MCP",
+  "description": "Drop-in company social profile resolver for sales/marketing tools, CRMs, lead-gen pipelines, and AI assistants: LinkedIn, Instagram, X, Facebook and YouTube handles with evidence via Apify MCP. Manifest-only — no Actor source. publicrecords/company-social-profile-finder.",
+  "category": "Lead Generation"
+}
