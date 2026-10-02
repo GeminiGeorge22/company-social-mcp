@@ -2,7 +2,7 @@
   "identifier": "geminigeorge22-company-social-mcp",
   "name": "Company Social MCP",
   "version": "1.0.0",
-  "description": "Resolve a company name, website or Google Maps listing to verified LinkedIn, Instagram, X, Facebook and YouTube handles with evidence, via Apify MCP.",
+  "description": "Company social handles (LinkedIn, Instagram, X, Facebook, YouTube) via Apify MCP.",
   "homepage": "https://github.com/GeminiGeorge22/company-social-mcp",
   "cloudEndpoint": "https://mcp.apify.com/?tools=publicrecords/company-social-profile-finder",
   "auth": "OAuth/token"

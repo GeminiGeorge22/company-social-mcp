@@ -1,11 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.GeminiGeorge22/company-social-mcp",
-  "description": "Resolve a company name, website or Google Maps listing to verified LinkedIn, Instagram, X, Facebook and YouTube handles with evidence, via Apify MCP.",
-  "repository": { "url": "https://github.com/GeminiGeorge22/company-social-mcp", "source": "github" },
+  "description": "Company social handles (LinkedIn, Instagram, X, Facebook, YouTube) via Apify MCP.",
+  "repository": {
+    "url": "https://github.com/GeminiGeorge22/company-social-mcp",
+    "source": "github"
+  },
   "version": "1.0.0",
   "websiteUrl": "https://geminigeorge22.github.io/",
   "remotes": [
-    { "type": "streamable-http", "url": "https://mcp.apify.com/?tools=publicrecords/company-social-profile-finder" }
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.apify.com/?tools=publicrecords/company-social-profile-finder"
+    }
   ]
 }
