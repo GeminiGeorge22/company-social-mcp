@@ -68,7 +68,7 @@ Single-shot agent/Zapier style:
 { "query": "apify.com" }
 ```
 
-Optional: `inputDatasetId` + `domainField` to enrich an existing dataset in place; leave `queries` empty when using that path. Buyer modes: `resolve` (default), `export`, `forget`. Publisher maintenance modes (`healthcheck`, `reverify`, `seed`, `buildSecIndex`) are not for buyer runs.
+Optional: `inputDatasetId` + `domainField` to enrich an existing dataset in place; leave `queries` empty when using that path. Buyer modes: `resolve` (default), `export`, `forget`. Other modes are publisher maintenance and not for buyer runs.
 
 ## Limits
 

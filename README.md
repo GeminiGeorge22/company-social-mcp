@@ -23,15 +23,17 @@ Use either path:
 
 Auth: your own Apify token in the client when prompted. Runs are billed on your Apify account.
 
-## Pricing (Console PPE, FREE tier base, live 2026-10-02)
+## Pricing (as of Oct 28, 2026)
 
-| Event | USD |
+Pay per event, billed on your Apify account ([Store pricing](https://apify.com/publicrecords/company-social-profile-finder/pricing)). Free-plan list prices; Apify Store discounts lower them on paid plans.
+
+| Event | Price |
 |---|---|
-| `actor-start` | $0.005 |
-| `entity-resolved` (primary) | $0.02 |
-| `identity-change` | $0.01 |
+| `entity-resolved` (primary) | 2¢ per company with at least one confident link (1.6¢ on Silver and up) |
+| `actor-start` | 0.5¢ once per run (0.4¢ on Silver and up) |
+| `identity-change` | 1¢ (0.8¢ on Silver and up) |
 
-Measured proof: `apify.com` → run `dqgG9vmZuLevEMQ3T` — 5 confident / 4 confirmed handles (2026-09-28).
+Example: `apify.com` resolved to 5 confident / 4 confirmed handles (2026-09-28).
 
 ## Tools
 
@@ -68,7 +70,7 @@ Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claud
 }
 ```
 
-Or point the Apify remote MCP URL (with the pin above) if your Claude Desktop build supports remote MCP servers.
+Or point the Apify remote MCP URL (with the pin above) if your Claude Desktop version supports remote MCP servers.
 
 ## Cursor
 
@@ -92,7 +94,7 @@ Sign in with Apify when Cursor prompts.
 
 **Prompt:** Which social profiles belong to `apify.com`?
 
-**Expected:** LinkedIn / Instagram / X / Facebook / YouTube handles with confidence + evidence (see proof run `dqgG9vmZuLevEMQ3T`).
+**Expected:** LinkedIn / Instagram / X / Facebook / YouTube handles with confidence + evidence.
 
 ### 2) Enrich a CRM row
 
