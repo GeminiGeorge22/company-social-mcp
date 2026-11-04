@@ -1,0 +1,62 @@
+{
+  "name": "company-social-mcp",
+  "version": "0.1.0",
+  "description": "Stdio MCP server that finds a company's LinkedIn, X, YouTube, Instagram and Facebook profiles via Apify's hosted MCP gateway",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "company-social-mcp": "src/server.js"
+  },
+  "main": "src/proxy.js",
+  "files": [
+    "src",
+    "tools.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/env-guard.test.js test/proxy.test.js",
+    "build:tools": "node scripts/build-tools.mjs",
+    "check:tools": "node scripts/build-tools.mjs --check"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GeminiGeorge22/company-social-mcp.git"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "apify",
+    "company-social-profiles",
+    "linkedin",
+    "lead-generation",
+    "enrichment"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2"
+  },
+  "mcpProxy": {
+    "actors": [
+      "publicrecords/company-social-profile-finder"
+    ],
+    "inputs": {
+      "publicrecords/company-social-profile-finder": [
+        "queries",
+        "query",
+        "inputDatasetId",
+        "domainField",
+        "maxRows",
+        "outputFormat",
+        "confidentThreshold",
+        "forceRefresh",
+        "maxConcurrency"
+      ]
+    },
+    "$comment": "inputs: the Actor input fields exposed as tool parameters (schema order). Other fields keep their Actor defaults."
+  }
+}

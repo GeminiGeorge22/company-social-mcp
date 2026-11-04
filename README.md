@@ -1,119 +1,157 @@
-# company-social-mcp
+# Company Social MCP: Website to LinkedIn & Social Links
 
-Drop-in **company social profile resolution** for **sales and marketing software** — CRMs, lead-gen tools, enrichment pipelines, and AI assistants — via [Apify’s hosted MCP](https://mcp.apify.com) or the Store Actor directly.
+<!-- mcp-name: io.github.GeminiGeorge22/company-social-mcp -->
 
-Resolves a **company name, website, or Google Maps listing** to its verified **LinkedIn, Instagram, X, Facebook and YouTube** handles, with evidence. **Manifest-only repo — no Actor source.**
+An MCP server that tells your AI assistant which social profiles belong to a company. Give it a website domain, a company name (optionally with a city), a profile URL, a prefixed handle or a Google Maps place ID, and it returns the company's **LinkedIn, X, YouTube, Instagram and Facebook** links, each with a **confidence score** and the **evidence** behind it. Works for one company in a chat or for a whole dataset of leads.
 
-**Disclosure:** I maintain these Actors on Apify Store (`publicrecords`). This repo documents MCP / client config only.
+On the default path, Instagram and Facebook links are read from the company's own website and are not platform-verified; each link carries its verification status. Companies and places only: lookups for people are refused.
 
-## MCP pin
+Built on public web pages and open data, via the Apify Actor [Company Website to LinkedIn & Social Media Links](https://apify.com/publicrecords/company-social-profile-finder). Not affiliated with LinkedIn, Meta, X Corp, Google or YouTube.
+
+- Apify Store: https://apify.com/publicrecords/company-social-profile-finder
+- MCP server: https://mcp.apify.com?tools=publicrecords/company-social-profile-finder
+
+## Example prompts
+
+- "Which social profiles belong to stripe.com?"
+- "Find the LinkedIn and X accounts for these domains: notion.so, linear.app, vercel.com. Only confident links."
+- "Is https://www.instagram.com/acme really the official account of Acme Plumbing, Toronto?"
+- "Enrich my Google Maps leads dataset with each business's social links."
+
+## Tool
+
+| Tool | Input | Output |
+| --- | --- | --- |
+| `publicrecords--company-social-profile-finder` | `queries` (domains, company names, profile URLs, handles such as `ig:acme`, Maps place IDs) or a single `query`; or `inputDatasetId` (+ `domainField`, `maxRows`) to enrich an existing dataset; `outputFormat`, `confidentThreshold`, `forceRefresh`, `maxConcurrency` | One row per company: resolved organization, LinkedIn / X / YouTube / Instagram / Facebook links with confidence, a verified flag and (in `full` format) the evidence trail. Ambiguous names return a ranked `candidates` row to pick from |
+
+The tool exposes the Actor's everyday input fields; every other Actor field keeps its default. The tool schema is in [`tools.json`](tools.json), generated from the Actor's public input schema and checked for drift daily.
+
+## MCP endpoint
 
 ```
-https://mcp.apify.com/?tools=publicrecords/company-social-profile-finder
+https://mcp.apify.com?tools=publicrecords/company-social-profile-finder
 ```
 
-| Actor | Store / status | Role |
-|---|---|---|
-| **Company Social Media Profile Finder** | [publicrecords/company-social-profile-finder](https://apify.com/publicrecords/company-social-profile-finder) (listed) | Resolve name / website / Maps place → LinkedIn, Instagram, X, Facebook, YouTube (+ evidence) |
+Transport: Streamable HTTP (hosted by Apify, see https://docs.apify.com/mcp).
 
-Use either path:
+## Auth
 
-- **Apify MCP** (Claude Desktop, Cursor, or any MCP client) with the pin above
-- **Store Actor** directly in Apify Console / API for pipelines, CRMs, and dashboards
+Sign in with Apify OAuth when your client prompts you, or send the header
+`Authorization: Bearer <APIFY_TOKEN>` where `<APIFY_TOKEN>` is your own Apify API token.
+Never commit a real token.
 
-Auth: your own Apify token in the client when prompted. Runs are billed on your Apify account.
+## Client setup
 
-## Pricing (as of Oct 28, 2026)
+### Claude
 
-Pay per event, billed on your Apify account ([Store pricing](https://apify.com/publicrecords/company-social-profile-finder/pricing)). Free-plan list prices; Apify Store discounts lower them on paid plans.
+Claude Code:
 
-| Event | Price |
-|---|---|
-| `entity-resolved` (primary) | 2¢ per company with at least one confident link (1.6¢ on Silver and up) |
-| `actor-start` | 0.5¢ once per run (0.4¢ on Silver and up) |
-| `identity-change` | 1¢ (0.8¢ on Silver and up) |
+```
+claude mcp add --transport http company-social "https://mcp.apify.com?tools=publicrecords/company-social-profile-finder"
+```
 
-Example: `apify.com` resolved to 5 confident / 4 confirmed handles (2026-09-28).
+Claude Desktop / claude.ai: Settings → Connectors → Add custom connector, and paste the MCP endpoint URL above.
 
-## Tools
+### Cursor
 
-Live `tools/list` against the pin URL (Bearer Apify token). Tool names exposed:
+`~/.cursor/mcp.json`:
 
-| Tool name | Role |
-|---|---|
-| `publicrecords--company-social-profile-finder` | Run Company Social Media Profile Finder (`publicrecords/company-social-profile-finder`) |
-| `get-actor-run` | Get detailed information about a specific Actor run |
-| `get-dataset-items` | Read items from a run dataset |
-| `get-key-value-store-record` | Read a key-value store record |
-| `abort-actor-run` | Abort a running Actor run |
+```json
+{
+  "mcpServers": {
+    "company-social": {
+      "url": "https://mcp.apify.com?tools=publicrecords/company-social-profile-finder"
+    }
+  }
+}
+```
 
-## Claude Desktop
+### VS Code
 
-Add to `claude_desktop_config.json` (macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`):
+`.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "company-social": {
+      "type": "http",
+      "url": "https://mcp.apify.com?tools=publicrecords/company-social-profile-finder"
+    }
+  }
+}
+```
+
+To use a token instead of OAuth, add `"headers": { "Authorization": "Bearer <APIFY_TOKEN>" }` next to `"url"`.
+
+---
+
+Disclosure: I maintain this Actor.
+
+## Local stdio server (open source)
+
+This repo also ships a small MCP server in [`src/`](src/) for clients that only run local stdio servers. It answers `initialize` and `tools/list` locally from [`tools.json`](tools.json), which is generated from the Actor's public input schema and checked for drift in CI and daily, so any client or directory can inspect the tools with no token. `tools/call` is forwarded to the hosted Apify MCP endpoint above with **your own** `APIFY_TOKEN`; without a token a call returns a clear error instead of running anything. The token is only sent in the `Authorization` header and is never logged.
+
+```bash
+npx -y github:GeminiGeorge22/company-social-mcp
+```
 
 ```json
 {
   "mcpServers": {
     "company-social": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@apify/actors-mcp-server",
-        "--actors",
-        "publicrecords/company-social-profile-finder"
-      ],
-      "env": {
-        "APIFY_TOKEN": "YOUR_APIFY_TOKEN"
-      }
+      "args": ["-y", "github:GeminiGeorge22/company-social-mcp"],
+      "env": { "APIFY_TOKEN": "YOUR_APIFY_TOKEN" }
     }
   }
 }
 ```
 
-Or point the Apify remote MCP URL (with the pin above) if your Claude Desktop version supports remote MCP servers.
+Or from a clone:
 
-## Cursor
+```bash
+git clone https://github.com/GeminiGeorge22/company-social-mcp.git
+cd company-social-mcp && npm install
+APIFY_TOKEN=YOUR_APIFY_TOKEN node src/server.js
+```
 
-In Cursor MCP settings / `.cursor/mcp.json`:
+Optional env: `APIFY_ACTORS` (comma-separated subset of the Actors above) and `APIFY_MCP_URL` (full endpoint override).
+
+Tests run against an in-memory mock server, with no network and no token: `npm test`. Requires Node.js 18+.
+
+### Python (uvx/pip)
+
+A matching Python version of this server lives in [`python/`](python/), built on the official `mcp` Python SDK: same tool, same `APIFY_TOKEN`, same hosted endpoint. Requires Python 3.10+.
+
+```bash
+uvx company-social-mcp
+```
 
 ```json
 {
   "mcpServers": {
     "company-social": {
-      "url": "https://mcp.apify.com/?tools=publicrecords/company-social-profile-finder"
+      "command": "uvx",
+      "args": ["company-social-mcp"],
+      "env": { "APIFY_TOKEN": "YOUR_APIFY_TOKEN" }
     }
   }
 }
 ```
 
-Sign in with Apify when Cursor prompts.
+Or with pip: `pip install company-social-mcp`, then run `company-social-mcp`. Until the first PyPI release, run it from GitHub: `uvx --from "git+https://github.com/GeminiGeorge22/company-social-mcp#subdirectory=python" company-social-mcp`. Python tests: `cd python && pip install -e ".[test]" && env -u APIFY_TOKEN python -m pytest`.
 
-## Example prompts
+## Agent skill
 
-### 1) Resolve a company website
+[`skills/company-social-profile-finder/SKILL.md`](skills/company-social-profile-finder/SKILL.md) is a drop-in skill file that tells an agent when and how to call the tool.
 
-**Prompt:** Which social profiles belong to `apify.com`?
+## See also
 
-**Expected:** LinkedIn / Instagram / X / Facebook / YouTube handles with confidence + evidence.
-
-### 2) Enrich a CRM row
-
-**Prompt:** Resolve social handles for these domains: `stripe.com`, `notion.so`. Return confident LinkedIn and X only.
-
-Tool call the agent makes (`publicrecords--company-social-profile-finder`):
-
-```json
-{ "queries": ["stripe.com", "notion.so"], "mode": "resolve" }
-```
-
-## What this repo is not
-
-- Not Actor implementation / Docker / truth sets
-- Not a substitute for Apify Console billing screens
-- Not affiliated with LinkedIn, Meta, X Corp, Google, or YouTube
+- [google-ads-transparency-mcp](https://github.com/GeminiGeorge22/google-ads-transparency-mcp): Competitor Google ads from the Ads Transparency Center: new, running and stopped.
+- [ats-jobs-mcp](https://github.com/GeminiGeorge22/ats-jobs-mcp): New job postings from Greenhouse, Lever, Ashby and SmartRecruiters boards.
+- [gov-tenders-mcp](https://github.com/GeminiGeorge22/gov-tenders-mcp): Government tenders, grants and contract awards.
+- [spotify-play-count-mcp](https://github.com/GeminiGeorge22/spotify-play-count-mcp): Spotify play counts, monthly listeners and followers.
 
 ## License
 
-MIT — applies to this documentation and config only.
-
-Published by the publicrecords maintainer on Apify.
+MIT
