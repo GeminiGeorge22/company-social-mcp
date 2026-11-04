@@ -1,0 +1,3 @@
+{
+  "publicrecords/company-social-profile-finder": "Use when you need the official social profiles of a company: give a website domain, company name, profile URL or Google Maps listing and get its LinkedIn, X, YouTube, Instagram and Facebook links, each with a confidence score and the evidence behind it. Instagram and Facebook links come from the company's own site on the default path and are not platform-verified. Good for CRM enrichment, lead lists and checking that a handle really belongs to a brand; not for personal profiles, follower counts or posts."
+}

@@ -2,15 +2,15 @@
 name: company-social-profile-finder
 version: 1.0.0
 author: GeminiGeorge22
-description: "Which social profiles belong to this company? Resolves a name, website or Google Maps listing to its verified LinkedIn, Instagram, X, Facebook and YouTube handles, with evidence. Uses Apify Actor publicrecords/company-social-profile-finder through MCP; needs an Apify token (OAuth/token)."
+description: "Which social profiles belong to this company? Resolves a name, website or Google Maps listing to its LinkedIn, X, YouTube, Instagram and Facebook handles, with confidence and evidence. Uses Apify Actor publicrecords/company-social-profile-finder through MCP; needs an Apify token (OAuth/token)."
 metadata: {"nexscope":{"emoji":"🔗","category":"lead-generation"}}
 ---
 
 # Company Social Media Profile Finder 🔗
 
-Give the agent verified company social handles to reason from: LinkedIn, Instagram, X, Facebook and YouTube — with confidence scores and evidence — from a name, website, or Google Maps place.
+Give the agent company social handles to reason from: LinkedIn, X, YouTube, Instagram and Facebook — with confidence scores and evidence — from a name, website, or Google Maps place. On the default path, Instagram and Facebook links come from the company's own site and are not platform-verified.
 
-Disclosure: I maintain these Actors on Apify Store (publicrecords).
+Disclosure: I maintain this Actor.
 
 ## Installation
 
@@ -31,11 +31,11 @@ This skill calls the **Company Social Media Profile Finder** Actor (`publicrecor
 }
 ```
 
-Auth: Apify OAuth/token. An Apify account is free; the Actor bills via Console PPE (`actor-start`, `entity-resolved`, `identity-change` — see repo README).
+Auth: Apify OAuth or your own Apify API token; runs use your Apify account.
 
 ## What a record contains
 
-Field names from a live SUCCEEDED dataset item (entity row, schemaVersion 3):
+Main fields of an entity row:
 
 | field | meaning |
 |---|---|
@@ -46,7 +46,7 @@ Field names from a live SUCCEEDED dataset item (entity row, schemaVersion 3):
 | `identifiers.<platform>` | per-platform handle: `id`, `url`, `confidence`, `confident`, `verification`, `evidence[]` |
 | platforms typically present | `linkedin`, `instagram`, `x` / `twitter`, `facebook`, `youtube`, plus `github` / `wikidata` when found |
 
-Ambiguous name queries may return a ranked `candidates` row (free) instead of a charged `entity-resolved`.
+Ambiguous name queries may return a ranked `candidates` row to pick from instead of a resolved entity.
 
 ## Usage
 
@@ -68,10 +68,10 @@ Single-shot agent/Zapier style:
 { "query": "apify.com" }
 ```
 
-Optional: `inputDatasetId` + `domainField` to enrich an existing dataset in place; leave `queries` empty when using that path. Buyer modes: `resolve` (default), `export`, `forget`. Other modes are publisher maintenance and not for buyer runs.
+Optional: `inputDatasetId` + `domainField` to enrich an existing dataset in place; leave `queries` empty when using that path. Use the default `resolve` mode.
 
 ## Limits
 
 - Organizations and places only — people queries are refused.
-- Name-only queries resolve when exactly one candidate is unambiguous; otherwise you get ranked candidates (no entity charge).
+- Name-only queries resolve when exactly one candidate is unambiguous; otherwise you get ranked candidates.
 - Confidence and verification strength come from declared + probe evidence; treat `confident: false` as provisional.
