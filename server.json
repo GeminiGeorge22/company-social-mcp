@@ -3,12 +3,32 @@
   "name": "io.github.GeminiGeorge22/company-social-mcp",
   "title": "Company Social MCP: Website to LinkedIn & Social Links",
   "description": "Find a company's LinkedIn, X, YouTube, Instagram and Facebook profiles from its website or name.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "websiteUrl": "https://apify.com/publicrecords/company-social-profile-finder",
   "repository": {
     "url": "https://github.com/GeminiGeorge22/company-social-mcp",
     "source": "github"
   },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "registryBaseUrl": "https://pypi.org",
+      "identifier": "company-social-mcp",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "APIFY_TOKEN",
+          "description": "Your own Apify API token. Needed for tools/call; tools/list works without it.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ],
   "remotes": [
     {
       "type": "streamable-http",
